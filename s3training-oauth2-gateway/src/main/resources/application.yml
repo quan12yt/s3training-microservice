@@ -1,0 +1,82 @@
+server:
+  port: 9500
+logging:
+  level:
+    ROOT: DEBUG
+eureka:
+  client:
+    instance:
+      hostname: localhost
+      appname: gateway-service
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+spring:
+  application:
+    name: gateway-service
+  security:
+    oauth2:
+      client:
+        registration:
+          gateway-client:
+            provider: spring
+            client-id: gateway-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid,articles.read
+            client-name: gateway-client
+        provider:
+          spring:
+            issuer-uri: http://127.0.0.1:9000
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      locator:
+        enabled: true
+      routes:
+        - id: db-service
+          uri: lb://DB-SERVICE
+          predicates:
+            - Path=/db-service/**
+          filters:
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth-service/**
+        - id: load-service
+          uri: lb://LOAD-SERVICE
+          predicates:
+            - Path=/load-service/**
+        - id: oauth2-client
+          uri: lb://OAUTH2-CLIENT
+          predicates:
+            - Path=/oauth2-client/**
+#          filters:
+#            - TokenRelay=
+#            - RemoveRequestHeader=Cookie
+
+
+ribbon:
+  eureka:
+    enabled: false
+
+db-service:
+  ribbon:
+    listOfServers: localhost:8000, localhost:8001, localhost:8002, localhost:8003
+    ServerListRefreshInterval: 1000
+    retryableStatusCodes: 404, 500
+    MaxAutoRetries: 2
+    MaxAutoRetriesNextServer: 1
+    OkToRetryOnAllOperations: true
+    ReadTimeout: 10000
+    ConnectTimeout: 10000
+    EnablePrimeConnections: true
+
+management:
+  endpoint:
+    health:
+      enabled: true
+

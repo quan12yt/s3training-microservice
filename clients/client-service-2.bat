@@ -1,0 +1,1 @@
+java -jar -DskipTests -Dspring.profiles.active=db-service2 db-microservice-0.0.1-SNAPSHOT.jar

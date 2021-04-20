@@ -1,0 +1,53 @@
+server:
+  port: 8200
+
+spring:
+  cloud:
+    discovery:
+      enabled: true
+  application:
+    name: oauth2-client
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          articles-client:
+#            provider: spring
+#            client-id: articles-client
+#            client-secret: secret
+#            authorization-grant-type: authorization_code
+#          #  redirect-uri: "http://localhost:9500/login/oauth2/code/gateway-client"
+#            scope: openid
+#            client-name: articles-client
+#          articles-client-authorization-code:
+#            provider: spring
+#            client-id: articles-client-authorization-code
+#            client-secret: secret
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/authorized"
+#            scope: articles.read
+#            client-name: articles-client-authorization-code
+#        provider:
+#          spring:
+#            issuer-uri: http://127.0.0.1:9000
+
+eureka:
+  instance:
+    hostname: localhost
+    appname: oauth2-client
+    prefer-ip-address: true
+  client:
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+
+logging:
+  level:
+    ROOT: DEBUG
+#
+#
+#---
+## Items that apply to ALL profiles:
+
+

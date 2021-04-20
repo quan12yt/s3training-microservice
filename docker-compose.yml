@@ -1,0 +1,50 @@
+version : "2.1"
+
+services:
+  eureka-server:
+    image: microservice/server
+    container_name: eureka
+    build:
+      context: .
+      dockerfile: ./s3training-eurekaserver/Dockerfile
+    hostname: localhost
+    ports:
+      - "9000:9000"
+    networks:
+      - microservicesnet
+
+  gateway-service:
+    image: microservice/gateway
+    container_name: cloud-gateway
+    build:
+      context: .
+      dockerfile: ./s3training-cloud-gateway/Dockerfile
+    ports:
+     - "9500:9500"
+    networks:
+      - microservicesnet
+
+  load-service:
+    image: microservice/team
+    container_name: team
+    build:
+      context: .
+      dockerfile: ./load-balancer/Dockerfile
+    ports:
+       - "9200:9200"
+    networks:
+      - microservicesnet
+
+  db-service:
+    image: microservice/member
+    container_name: member
+    build:
+      context: .
+      dockerfile: ./s3training-db-microservice/Dockerfile
+    ports:
+       - "8001:8001"
+    networks:
+      - microservicesnet
+
+networks:
+  microservicesnet:
